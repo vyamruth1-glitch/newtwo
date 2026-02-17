@@ -28,8 +28,11 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+st.set_page_config(page_title="Professional Stock Predictor", layout="wide")
+
 st.title("Stock Predictor")
 st.info("TensorFlow training removed for cloud demo. Showing stock data and analysis.")
+
 
 
 
@@ -42,7 +45,7 @@ np.random.seed(SEED)
 
 
 # ---------------- Streamlit config ----------------
-st.set_page_config(page_title="Professional Stock Predictor", layout="wide", page_icon="📊")
+
 
 # ---------------- Styling ----------------
 st.markdown("""
