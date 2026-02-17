@@ -322,57 +322,59 @@ def main():
 
     # Build or load predictor
     predictor = None
-    if not retrain:
-        predictor = load_model_and_scalers(ticker)
-        if predictor:
-            # ensure architecture matches selected model_type (best-effort)
-            predictor.model_type = model_type.lower()
-            st.success(f"Loaded cached model for {ticker}. (Toggle 'Retrain model' to retrain.)")
-    if predictor is None:
-        predictor = StockPredictor(model_type=model_type.lower(), lookback=lookback, n_features=len(feature_cols),
+ #   if not retrain:
+  #      predictor = load_model_and_scalers(ticker)
+   #     if predictor:
+    #        # ensure architecture matches selected model_type (best-effort)
+     #       predictor.model_type = model_type.lower()
+      #      st.success(f"Loaded cached model for {ticker}. (Toggle 'Retrain model' to retrain.)")
+  #  if predictor is None:
+   #     predictor = StockPredictor(model_type=model_type.lower(), lookback=lookback, n_features=len(feature_cols),
                                    units1=64, units2=32, dropout_rate=0.12, lr=5e-4)
 
     # Train only if model not trained / retrain requested
-    history = None
-    trained_here = False
-    if not predictor.is_trained or retrain:
-        with st.spinner("Training model (this can take a little while)..."):
-            history = predictor.train(X_train, y_train, validation_split=0.15, epochs=epochs, verbose=0)
-            trained_here = True
-            save_model_and_scalers(ticker, predictor)
-            st.success("Training finished and model cached.")
-    else:
-        st.info("Using cached model — skipping training.")
+   # history = None
+   # trained_here = False
+   # if not predictor.is_trained or retrain:
+    #    with st.spinner("Training model (this can take a little while)..."):
+     #       history = predictor.train(X_train, y_train, validation_split=0.15, epochs=epochs, verbose=0)
+      #      trained_here = True
+       #     save_model_and_scalers(ticker, predictor)
+        #    st.success("Training finished and model cached.")
+   # else:
+    #    st.info("Using cached model — skipping training.")
 
     # If history is None but we loaded model, create empty history for plotting logic
-    if history is None:
-        class DummyHistory:
-            history = {}
-        history = DummyHistory()
+   # if history is None:
+    #    class DummyHistory:
+     #       history = {}
+      #  history = DummyHistory()
 
     # Test predictions (deterministic)
-    preds_test_prices = predictor.predict_price_from_window(X_test, mc_dropout=False)
+   # preds_test_prices = predictor.predict_price_from_window(X_test, mc_dropout=False)
 
     # Align test dates & true prices
-    pred_start_idx = lookback + split
-    dates_test = df['Date'].iloc[pred_start_idx: pred_start_idx + len(y_test)].reset_index(drop=True)
-    true_prices = df['Close'].iloc[pred_start_idx: pred_start_idx + len(y_test)].values
+   # pred_start_idx = lookback + split
+   # dates_test = df['Date'].iloc[pred_start_idx: pred_start_idx + len(y_test)].reset_index(drop=True)
+   # true_prices = df['Close'].iloc[pred_start_idx: pred_start_idx + len(y_test)].values
 
     # Residuals & metrics
-    residuals = true_prices - preds_test_prices
-    resid_std = float(np.std(residuals)) if len(residuals) > 0 else 0.0
-    resid_bias = float(np.mean(residuals)) if len(residuals) > 0 else 0.0
+   # residuals = true_prices - preds_test_prices
+   # resid_std = float(np.std(residuals)) if len(residuals) > 0 else 0.0
+   # resid_bias = float(np.mean(residuals)) if len(residuals) > 0 else 0.0
 
     # MC-dropout CI on test
-    try:
-        mc_preds_test = predictor.predict_price_from_window(X_test, mc_dropout=True, n_iter=mc_iters)
-        mc_lower = np.percentile(mc_preds_test, 10, axis=0)
-        mc_upper = np.percentile(mc_preds_test, 90, axis=0)
-        lower_test = np.minimum(mc_lower, preds_test_prices - resid_std)
-        upper_test = np.maximum(mc_upper, preds_test_prices + resid_std)
-    except Exception:
-        lower_test = preds_test_prices - resid_std
-        upper_test = preds_test_prices + resid_std
+   # try:
+    #    mc_preds_test = predictor.predict_price_from_window(X_test, mc_dropout=True, n_iter=mc_iters)
+     #   mc_lower = np.percentile(mc_preds_test, 10, axis=0)
+      #  mc_upper = np.percentile(mc_preds_test, 90, axis=0)
+       # lower_test = np.minimum(mc_lower, preds_test_prices - resid_std)
+        #upper_test = np.maximum(mc_upper, preds_test_prices + resid_std)
+   # except Exception:
+    #    lower_test = preds_test_prices - resid_std
+     #   upper_test = preds_test_prices + resid_std
+st.warning("Training disabled on Streamlit Cloud. Demo mode only.")
+return
 
     # Naive baseline
     naive_test = None
