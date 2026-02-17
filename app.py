@@ -24,25 +24,14 @@ import yfinance as yf
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-import tensorflow as tf
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import LSTM, GRU, Dense, Dropout
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from tensorflow.keras.optimizers import Adam
+
 
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+st.title("Stock Predictor")
+st.info("TensorFlow training removed for cloud demo. Showing stock data and analysis.")
 
-# ---------------- Logging / TF clean up ----------------
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
-# silence TensorFlow excessive logs and autograph warnings that clutter cloud logs
-tf.get_logger().setLevel('ERROR')
-try:
-    tf.autograph.set_verbosity(0)
-except Exception:
-    pass
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -50,7 +39,7 @@ warnings.filterwarnings("ignore")
 # ---------------- Determinism ----------------
 SEED = 42
 np.random.seed(SEED)
-tf.random.set_seed(SEED)
+
 
 # ---------------- Streamlit config ----------------
 st.set_page_config(page_title="Professional Stock Predictor", layout="wide", page_icon="📊")
