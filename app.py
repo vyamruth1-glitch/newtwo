@@ -20,6 +20,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import yfinance as yf
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error
