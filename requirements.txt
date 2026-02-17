@@ -5,8 +5,6 @@ yfinance
 scikit-learn
 matplotlib
 plotly
-tensorflow
-tensorflow-probability
 scipy
 seaborn
 python-dotenv
